@@ -3,7 +3,7 @@
 
 #include <loki/Typelist.h>
 
-namespace Miximum
+namespace Mix
 {
   template<class TList>
     struct LeafLength;
@@ -19,7 +19,7 @@ namespace Miximum
       enum { value = 1 + LeafLength<U>::value };
     };
   template<class T1, class T2, class U>
-    struct LeafLength<Loki::Typelist<Typelist<T1, T2>, U>>
+  struct LeafLength<Loki::Typelist<Loki::Typelist<T1, T2>, U>>
     {
       enum { value = LeafLength<Loki::Typelist<T1, T2>>::value + LeafLength<U>::value };
     };
@@ -33,7 +33,7 @@ namespace Miximum
       enum { value = -1 };
     };
   template<class Tail, class T>
-    struct LeafIndexOf<Typelist<T, Tail>, T> // 繝槭ャ繝√ヱ繧ｿ繝ｼ繝ｳ(險井ｸ企幕蟋�)
+  struct LeafIndexOf<Loki::Typelist<T, Tail>, T> // 繝槭ャ繝√ヱ繧ｿ繝ｼ繝ｳ(險井ｸ企幕蟋�)
     {
       enum { value = 0 };
     };
@@ -43,7 +43,7 @@ namespace Miximum
       enum { value = Loki::TL::IndexOf<Loki::Typelist<Head, Tail>, T>::value };
     };
   template<class Head1, class Head2, class Tail, class T>
-    struct LeafIndexOf<Loki::Typelist<Typelist<Head1, Head2>, Tail>, T> // Head縺悟����隗｣縺ｧ縺阪ｋ蝣ｴ蜷�
+  struct LeafIndexOf<Loki::Typelist<Loki::Typelist<Head1, Head2>, Tail>, T> // Head縺悟����隗｣縺ｧ縺阪ｋ蝣ｴ蜷�
     {
     private:
       using Head = Loki::Typelist<Head1, Head2>; // Head縺後ち繧､繝励Μ繧ｹ繝�
