@@ -1,7 +1,7 @@
 CC = clang++
 LD = clang++
-CCFLAGS = -Wall -Wextra -c
-LDFLAGS = -headerpad_max_install_names
+CCFLAGS = -Wall -Wextra -c -std=c++11
+LDFLAGS = 
 
 SourceDir = src
 BuildDir = build
@@ -14,7 +14,6 @@ ResourcesDir = resc
 Images = $(wildcard $(ResourcesDir)/imgs/*)
 
 Sources = $(wildcard src/*.cpp)
-#Headers += $(wildcard src/include/*.hpp)
 
 Objects = $(patsubst $(SourceDir)/%.cpp,$(BuildDir)/%.o,$(Sources)) 
 
