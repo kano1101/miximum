@@ -49,7 +49,8 @@ namespace Mix
     using Head = Loki::Typelist<Head1, Head2>;
     enum { temp = LeafIndexOf<Tail, T>::value };
   public:
-    enum { value = temp == -1 ? LeafIndexOf<Head, T>::value : LeafLength<Head>::value + temp };
+    enum { value = temp == -1 ?
+	   LeafIndexOf<Head, T>::value : LeafLength<Head>::value + temp };
   };
 
 }
