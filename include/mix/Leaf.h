@@ -33,21 +33,21 @@ namespace Mix
     enum { value = -1 };
   };
   template<class Tail, class T>
-  struct LeafIndexOf<Loki::Typelist<T, Tail>, T> // 繝槭ャ繝√ヱ繧ｿ繝ｼ繝ｳ(險井ｸ企幕蟋�)
+  struct LeafIndexOf<Loki::Typelist<T, Tail>, T>
   {
     enum { value = 0 };
   };
   template<class Head, class Tail, class T>
-  struct LeafIndexOf<Loki::Typelist<Head, Tail>, T> // Head縺悟����隗｣縺ｧ縺阪↑縺�����ｴ蜷�
+  struct LeafIndexOf<Loki::Typelist<Head, Tail>, T>
   {
     enum { value = Loki::TL::IndexOf<Loki::Typelist<Head, Tail>, T>::value };
   };
   template<class Head1, class Head2, class Tail, class T>
-  struct LeafIndexOf<Loki::Typelist<Loki::Typelist<Head1, Head2>, Tail>, T> // Head縺悟����隗｣縺ｧ縺阪ｋ蝣ｴ蜷�
+  struct LeafIndexOf<Loki::Typelist<Loki::Typelist<Head1, Head2>, Tail>, T>
   {
   private:
-    using Head = Loki::Typelist<Head1, Head2>; // Head縺後ち繧､繝励Μ繧ｹ繝�
-    enum { temp = LeafIndexOf<Tail, T>::value }; //Tail縺ｯ蠢����★谺｡縺ｮTypelist縺起ullType
+    using Head = Loki::Typelist<Head1, Head2>;
+    enum { temp = LeafIndexOf<Tail, T>::value };
   public:
     enum { value = temp == -1 ? LeafIndexOf<Head, T>::value : LeafLength<Head>::value + temp };
   };
