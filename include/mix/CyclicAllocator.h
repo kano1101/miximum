@@ -1,6 +1,12 @@
-#pragma once
+//
+// created by 狩野 亮 on 2020/03/29.
+// Copyright (c) 2020年 狩野 亮. All rights reserved.
+//
 
-#include "loki/Singleton.h"
+#ifndef __CYCLIC_ALLOCATOR_H__
+#define __CYCLIC_ALLOCATOR_H__
+
+#include <loki/Singleton.h>
 
 #include "SortedStorage.h"
 
@@ -42,35 +48,6 @@ namespace Mix
       
     } // namespace Private
     
-//    template<class InputIterator>
-//    class ForEach
-//    {
-//    private:
-//      InputIterator next_;
-//
-//    public:
-//      template<class Function>
-//      Function Go(InputIterator first, InputIterator last, Function f) const
-//      {
-//        Set(first);
-//        for (;first != last;)
-//        {
-//          f(*first);
-//          ++first;
-//          if ( first != next_ ) first = next_;
-//        }
-//      }
-//      void Set(InputIterator next)
-//      {
-//        next_ = next;
-//      }
-//      void Step()
-//      {
-//        ++next_;
-//      }
-//
-//    }; // class ForEach<InputIterator>
-//
     ///////////////////////////////////////////////////////////////////////
     // class A;
     // class SomeInterface { public: virtual void Method() = 0; };
@@ -109,7 +86,7 @@ namespace Mix
 //        if (crnt == next_) ++next_;
 //      }
       
-    };
+    }; // class StaticErasableIteration<Iterator>
     
     template<class Iterator>
     Iterator StaticErasableIteration<Iterator>::next_(nullptr);
@@ -182,41 +159,8 @@ namespace Mix
     }; // class CyclicAllocator<T>
     
     
-
-    
-//    template<class T>
-//    class Executor
-//    {
-//    private:
-//      using The = Private::TheSortedStorage<typename T::AllTypelist, T::MaxCount>;
-//
-//    public:
-//      template<class Function>
-//      static Function ForAll(Function f)
-//      {
-//        return std::for_each(
-//          The::Instance().begin(),
-//          The::Instance().end(),
-//          f);
-//      }
-//
-//      template<class Function>
-//      static Function ForAllWithErase(Function f)
-//      {
-//        for (auto it = The::Instance().begin();;)
-//        {
-//          auto next = it;
-//          f(*it);
-//          it++;
-//          if ( it != next ) it = next;
-//
-//        }
-//
-//        return f;
-//      }
-//
-//    };
-    
   } // namespace
 
 } // namespace Mix
+
+#endif

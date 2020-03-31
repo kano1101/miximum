@@ -1,4 +1,10 @@
-#pragma once
+//
+//  Created by ç‹©é‡ äº® on 2020/03/29.
+//  Copyright Â© 2020å¹´ ç‹©é‡ äº®. All rights reserved.
+//
+
+#ifndef __TWIN_ARRAY_H__
+#define __TWIN_ARRAY_H__
 
 namespace Mix
 {
@@ -49,7 +55,7 @@ namespace Mix
     }; // class Node<T>
     
     //////////////////////////////////////////////////////////////////
-    // Å‘åŠm•ÛŒÂ”ŒÅ’è‚Ì“ñ–Ê‘o•ûŒüƒŠƒ“ƒN”z—ñ
+    // æœ€å¤§ç¢ºä¿å€‹æ•°å›ºå®šã®äºŒé¢åŒæ–¹å‘ãƒªãƒ³ã‚¯é…åˆ—
     //////////////////////////////////////////////////////////////////
     template<typename T, std::size_t MaxSize>
     class TwinArray
@@ -137,24 +143,24 @@ namespace Mix
       };
       
     private:
-      node_type nodes_[MaxSize]; // ŒÅ’èƒƒ‚ƒŠ—Ìˆæ‚ÌÅæ’[‚ğí‚Éw‚µ¦‚·
+      node_type nodes_[MaxSize]; // å›ºå®šãƒ¡ãƒ¢ãƒªé ˜åŸŸã®æœ€å…ˆç«¯ã‚’å¸¸ã«æŒ‡ã—ç¤ºã™
 
-      node_pointer used_; // g—p’†ƒƒ‚ƒŠ—Ìˆæ‚ÌÅŒã”öƒm[ƒh‚Ì‚Ğ‚Æ‚Â‚ ‚Æ‚Ìƒ_ƒ~[ƒm[ƒhBzŠÂƒŠƒ“ƒN‚É‚·‚é
-      node_pointer free_; // –¢g—pƒƒ‚ƒŠ—Ìˆæ‚ÌÅŒã”öƒm[ƒh‚Ì‚Ğ‚Æ‚Â‚ ‚Æ‚Ìƒ_ƒ~[ƒm[ƒhBzŠÂƒŠƒ“ƒN‚É‚·‚é
+      node_pointer used_; // ä½¿ç”¨ä¸­ãƒ¡ãƒ¢ãƒªé ˜åŸŸã®æœ€å¾Œå°¾ãƒãƒ¼ãƒ‰ã®ã²ã¨ã¤ã‚ã¨ã®ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã€‚å¾ªç’°ãƒªãƒ³ã‚¯ã«ã™ã‚‹
+      node_pointer free_; // æœªä½¿ç”¨ãƒ¡ãƒ¢ãƒªé ˜åŸŸã®æœ€å¾Œå°¾ãƒãƒ¼ãƒ‰ã®ã²ã¨ã¤ã‚ã¨ã®ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã€‚å¾ªç’°ãƒªãƒ³ã‚¯ã«ã™ã‚‹
 
     private:
-      std::size_t num_; // Àsæ‚èˆµ‚Á‚Ä‚¢‚é—v‘f”ií•Ï“®j
+      std::size_t num_; // å®Ÿè¡Œæ™‚å–ã‚Šæ‰±ã£ã¦ã„ã‚‹è¦ç´ æ•°ï¼ˆå¸¸æ™‚å¤‰å‹•ï¼‰
       
     public:
-      // –{ƒNƒ‰ƒX‚ğ”ÍˆÍfor‚È‚ÇAƒRƒ“ƒeƒi‚ÌŒ`‚Åˆµ‚¤‚±‚Æ‚ª‚Å‚«‚é‚æ‚¤‚É‚·‚é
+      // æœ¬ã‚¯ãƒ©ã‚¹ã‚’ç¯„å›²forãªã©ã€ã‚³ãƒ³ãƒ†ãƒŠã®å½¢ã§æ‰±ã†ã“ã¨ãŒã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹
       iterator begin() const noexcept { return iterator(used_->next_); }
       iterator end() const noexcept { return iterator(used_); }
       iterator free_begin() const noexcept { return iterator(free_->next_); }
       iterator free_end() const noexcept { return iterator(free_); }
 
     public:
-      bool empty() const noexcept { return begin() == end(); } // ƒ_ƒ~[‚ÌŸ‚àƒ_ƒ~[
-      bool full() const noexcept { return free_begin() == free_end(); } // ƒ_ƒ~[‚ÌŸ‚àƒ_ƒ~[
+      bool empty() const noexcept { return begin() == end(); } // ãƒ€ãƒŸãƒ¼ã®æ¬¡ã‚‚ãƒ€ãƒŸãƒ¼
+      bool full() const noexcept { return free_begin() == free_end(); } // ãƒ€ãƒŸãƒ¼ã®æ¬¡ã‚‚ãƒ€ãƒŸãƒ¼
       std::size_t max_size() const noexcept { return MaxSize; }
       std::size_t size() const noexcept { return num_; }
 
@@ -162,8 +168,8 @@ namespace Mix
       iterator insert(iterator position, const T& val) noexcept
       {
         if (full()) return iterator(nullptr);
-        iterator input = free_begin(); // ‹ó—ñ‚æ‚è–¢‰Šú‰»‘ÎÛ‚ğŠl“¾
-        iterator result = LinkTo(position, input); // result‚Íinput‚ğw‚·
+        iterator input = free_begin(); // ç©ºåˆ—ã‚ˆã‚ŠæœªåˆæœŸåŒ–å¯¾è±¡ã‚’ç²å¾—
+        iterator result = LinkTo(position, input); // resultã¯inputã‚’æŒ‡ã™
         if (!result) return iterator(nullptr);
         
         *result = val;
@@ -176,16 +182,16 @@ namespace Mix
       iterator erase(iterator target) noexcept
       {
         if (empty()) return iterator(nullptr);
-        iterator position = free_end(); // position‚Ítarget‚ğ‘}“ü‚·‚éæ‚Ì‹ó—ñ‘¤‚ğw‚·
+        iterator position = free_end(); // positionã¯targetã‚’æŒ¿å…¥ã™ã‚‹å…ˆã®ç©ºåˆ—å´ã‚’æŒ‡ã™
         
         iterator result = target;
         ++result;
         
-        LinkTo(position, target); // free_end()‚É‚æ‚é‹ó—ñÅŒã”ö‚Étarget‚ğ˜AŒ‹‚µeraseŠ®—¹
-        // ‚±‚Ì‚Æ‚«LinkTo‚Ì–ß‚è’l‚Ííœ‘ÎÛ‚¾‚Á‚½target‚ğw‚µ‚Ä‚¢‚é‚½‚ß‹ó—ñ‘¤B
+        LinkTo(position, target); // free_end()ã«ã‚ˆã‚‹ç©ºåˆ—æœ€å¾Œå°¾ã«targetã‚’é€£çµã—eraseå®Œäº†
+        // ã“ã®ã¨ãLinkToã®æˆ»ã‚Šå€¤ã¯å‰Šé™¤å¯¾è±¡ã ã£ãŸtargetã‚’æŒ‡ã—ã¦ã„ã‚‹ãŸã‚ç©ºåˆ—å´ã€‚
         
         num_--;
-        return result; // —\‚ß‘Ş”ğ‚µ‚Ä‚¨‚¢‚½result‚ğ•Ô‚·‚Ì‚ª³‰ğ
+        return result; // äºˆã‚é€€é¿ã—ã¦ãŠã„ãŸresultã‚’è¿”ã™ã®ãŒæ­£è§£
       }
       void pop_back() noexcept { iterator it = end(); erase(--it); }
       void pop_front() noexcept { erase(begin()); }
@@ -194,49 +200,49 @@ namespace Mix
       value_type front() const noexcept { return *(begin()); }
 
     public:
-      // ãŒÀ—v‘fŒÂ”‚ğnum‚Éw’è‚µ‚Ä‰Šú‰»‚·‚é
+      // ä¸Šé™è¦ç´ å€‹æ•°ã‚’numã«æŒ‡å®šã—ã¦åˆæœŸåŒ–ã™ã‚‹
       template<typename... TInit>
       explicit TwinArray(const int sz = 0, TInit... args) noexcept
         : num_(sz)
-        , used_(new node_type) // ƒ_ƒ~[Bwork_—Ìˆæ‚ª•s—v‚Åplacement new‚µ‚È‚¢
-        , free_(new node_type) // “¯ã
+        , used_(new node_type) // ãƒ€ãƒŸãƒ¼ã€‚work_é ˜åŸŸãŒä¸è¦ã§placement newã—ãªã„
+        , free_(new node_type) // åŒä¸Š
       {
         assert(0 <= num_);
         assert(num_ <= MaxSize);
 
-        // ƒ[ƒNƒƒ‚ƒŠ‰Šú‰»(work_Šm•Û)
+        // ãƒ¯ãƒ¼ã‚¯ãƒ¡ãƒ¢ãƒªåˆæœŸåŒ–(work_ç¢ºä¿)
         for (int i = 0; i < MaxSize; i++)
         {
           //new(nodes_ + i) Node();
 
-          // used_ ‚Æ free_‚Íƒ[ƒN—Ìˆæ•s—v‚Ì‚½‚ßplacement new‚ÅŠm•Û‚µ‚È‚­‚Ä‚æ‚¢
-        } // ƒ[ƒLƒ“ƒOƒƒ‚ƒŠŠm•ÛŠ®—¹
+          // used_ ã¨ free_ã¯ãƒ¯ãƒ¼ã‚¯é ˜åŸŸä¸è¦ã®ãŸã‚placement newã§ç¢ºä¿ã—ãªãã¦ã‚ˆã„
+        } // ãƒ¯ãƒ¼ã‚­ãƒ³ã‚°ãƒ¡ãƒ¢ãƒªç¢ºä¿å®Œäº†
 
-        { // ƒŠƒ“ƒNƒŠƒXƒg‚Ì˜AŒ‹
+        { // ãƒªãƒ³ã‚¯ãƒªã‚¹ãƒˆã®é€£çµ
 
-          // ÅŒã”ö‚ÌƒCƒ“ƒfƒbƒNƒX
+          // æœ€å¾Œå°¾ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
           const int c = MaxSize - 1;
 
-          // Šeƒm[ƒh‚Ì‘OŒã˜AŒ‹ƒŠƒ“ƒN‚ğŒ‹‚Ô
+          // å„ãƒãƒ¼ãƒ‰ã®å‰å¾Œé€£çµãƒªãƒ³ã‚¯ã‚’çµã¶
           for (int i = 0; i < c; i++)
           {
             nodes_[i].next_ = &nodes_[i + 1];
             nodes_[i + 1].prev_ = &nodes_[i];
           }
 
-          // ƒ_ƒ~[ƒm[ƒh‚ğŒ‹‚Ô
-          used_->next_ = used_;      // ŠJn‚Íƒ_ƒ~[‚ğw‚µ¦‚·
-          used_->prev_ = used_;      // zŠÂ‚³‚¹‚é
+          // ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã‚’çµã¶
+          used_->next_ = used_;      // é–‹å§‹æ™‚ã¯ãƒ€ãƒŸãƒ¼ã‚’æŒ‡ã—ç¤ºã™
+          used_->prev_ = used_;      // å¾ªç’°ã•ã›ã‚‹
 
-          free_->next_ = &nodes_[0]; // ©—R—Ìˆæ‚Íƒm[ƒh—ñ‚ÌÅ‰
-          free_->prev_ = &nodes_[c]; // ©—R—Ìˆæ‚Ì––”ö‚©‚çzŠÂ
+          free_->next_ = &nodes_[0]; // è‡ªç”±é ˜åŸŸã¯ãƒãƒ¼ãƒ‰åˆ—ã®æœ€åˆ
+          free_->prev_ = &nodes_[c]; // è‡ªç”±é ˜åŸŸã®æœ«å°¾ã‹ã‚‰å¾ªç’°
 
           nodes_[0].prev_ = free_;
           nodes_[c].next_ = free_;
 
-        } // ˜AŒ‹Š®—¹
+        } // é€£çµå®Œäº†
 
-        { // —v‘f‰Šú‰»
+        { // è¦ç´ åˆæœŸåŒ–
           for (unsigned int i = 0; i < num_; i++)
           {
             this->push_back(T(args...));
@@ -256,24 +262,24 @@ namespace Mix
       }
 
     public:
-      // position‚ÌˆÊ’u‚Éinput‚ª“ü‚èApositionŠÜ‚ß‚»‚êˆÈ~‚ÍƒŠƒ“ƒN‚ª‚Ğ‚Æ‚Â‚¸‚ÂŒã‚ë‚Ö‚¸‚ê‚é
-      // ’ˆÓ“_‚Æ‚µ‚Ä‚ÍAƒŠƒ“ƒNƒŠƒXƒg‚ğLinkTo‚Å‚Â‚È‚¬‚©‚¦‚½ŒãA
-      // ƒCƒeƒŒ[ƒ^‚ªfreeƒŠƒXƒg‚ğ‚³‚µ‚Ä‚¢‚é‰Â”\«‚ª‚ ‚é‚Æ‚¢‚¤‚±‚ÆB
+      // positionã®ä½ç½®ã«inputãŒå…¥ã‚Šã€positionå«ã‚ãã‚Œä»¥é™ã¯ãƒªãƒ³ã‚¯ãŒã²ã¨ã¤ãšã¤å¾Œã‚ã¸ãšã‚Œã‚‹
+      // æ³¨æ„ç‚¹ã¨ã—ã¦ã¯ã€ãƒªãƒ³ã‚¯ãƒªã‚¹ãƒˆã‚’LinkToã§ã¤ãªãã‹ãˆãŸå¾Œã€
+      // ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ãŒfreeãƒªã‚¹ãƒˆã‚’ã•ã—ã¦ã„ã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ã¨ã„ã†ã“ã¨ã€‚
       iterator LinkTo(iterator position, iterator input) noexcept
       {
-        // ˆÚ“®Œ³ƒŠƒ“ƒN—ñ‚ª‹ó—ñ‚Å‚ ‚ê‚ÎƒGƒ‰[‚Ì‚½‚ßnullptr‚ğ•Ô‚·
+        // ç§»å‹•å…ƒãƒªãƒ³ã‚¯åˆ—ãŒç©ºåˆ—ã§ã‚ã‚Œã°ã‚¨ãƒ©ãƒ¼ã®ãŸã‚nullptrã‚’è¿”ã™
         if (input.p_->next_ == input.p_)
           return nullptr;
 
-        // input‚ğˆÚ“®Œ³ƒŠƒ“ƒN—ñ‚©‚ç—£’E
+        // inputã‚’ç§»å‹•å…ƒãƒªãƒ³ã‚¯åˆ—ã‹ã‚‰é›¢è„±
         input.p_->next_->prev_ = input.p_->prev_;
         input.p_->prev_->next_ = input.p_->next_;
 
-        // “àƒŠƒ“ƒN‚ğ‚Í‚é
+        // å†…ãƒªãƒ³ã‚¯ã‚’ã¯ã‚‹
         input.p_->next_ = position.p_;
         input.p_->prev_ = position.p_->prev_;
 
-        // ŠOƒŠƒ“ƒN‚ğ‚Í‚é
+        // å¤–ãƒªãƒ³ã‚¯ã‚’ã¯ã‚‹
         position.p_->prev_->next_ = input.p_;
         position.p_->prev_ = input.p_;
 
@@ -285,3 +291,5 @@ namespace Mix
   } // namespace API
 
 } // namespace Mix
+
+#endif

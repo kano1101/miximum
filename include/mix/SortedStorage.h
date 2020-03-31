@@ -1,4 +1,13 @@
-#include "loki/Singleton.h"
+//
+//  Created by 狩野 亮 on 2020/03/29.
+//  Copyright © 2020年 狩野 亮. All rights reserved.
+//
+
+#ifndef __SORTED_STORAGE_H__
+#define __SORTED_STORAGE_H__
+
+#include <loki/Typelist.h>
+#include <loki/Singleton.h>
 
 #include "MultiSetArray.h"
 
@@ -177,3 +186,5 @@ namespace Mix
   } // namespace
   
 } // namespace Mix
+
+#endif

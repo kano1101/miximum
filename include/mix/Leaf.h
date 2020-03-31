@@ -1,5 +1,10 @@
-#ifndef _MIXIMUM_LEAF_H_
-#define _MIXIMUM_LEAF_H_
+//
+//  Created by 狩野 亮 on 2020/03/29.
+//  Copyright © 2020年 狩野 亮. All rights reserved.
+//
+
+#ifndef _MIX_LEAF_H_
+#define _MIX_LEAF_H_
 
 #include <loki/Typelist.h>
 

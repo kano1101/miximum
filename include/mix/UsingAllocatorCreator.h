@@ -1,9 +1,15 @@
-#pragma once
+//
+//  Created by ç‹©é‡ äº® on 2020/03/29.
+//  Copyright Â© 2020å¹´ ç‹©é‡ äº®. All rights reserved.
+//
+
+#ifndef __MIX_CREATOR_H__
+#define __MIX_CREATOR_H__
 
 namespace Mix
 {
   /////////////////////////////////////////////////////////////////
-  // ¶¬ƒ|ƒŠƒV[:ƒ‰ƒCƒuƒ‰ƒŠƒR[ƒh
+  // ç”Ÿæˆãƒãƒªã‚·ãƒ¼:ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã‚³ãƒ¼ãƒ‰
   /////////////////////////////////////////////////////////////////
   template<template<class> class Alloc>
   struct CreateUsing
@@ -44,7 +50,7 @@ namespace Mix
     }; // struct NoDestroyCreator
 
     /////////////////////////////////////////////////////////////////
-    // ƒfƒŠ[ƒ^:ƒ‰ƒCƒuƒ‰ƒŠƒR[ƒh
+    // ãƒ‡ãƒªãƒ¼ã‚¿:ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã‚³ãƒ¼ãƒ‰
     // Mix::CreateUsing<Allocator>::Deleter<T>();
     /////////////////////////////////////////////////////////////////
     template<class T>
@@ -65,3 +71,4 @@ namespace Mix
 
 } // namespace Mix
 
+#endif
