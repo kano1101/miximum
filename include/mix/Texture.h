@@ -40,7 +40,9 @@ namespace Mix
       {
 	int w = tex.GetWidth();
 	int h = tex.GetHeight();
+        
 	NewSourceRect(w, h);
+        
       }
       ~Sprite()
 	{
@@ -63,10 +65,14 @@ namespace Mix
 		// |   |
 		// 3 - 2
 		GLfloat* p_vtx = new GLfloat[8] {
-						 x * (i + 0), y * (j + 0),
-						 x * (i + 1), y * (j + 0),
-						 x * (i + 1), y * (j + 1),
-						 x * (i + 0), y * (j + 1),
+						 // x * (i + 0), y * (j + 0),
+						 // x * (i + 1), y * (j + 0),
+						 // x * (i + 1), y * (j + 1),
+						 // x * (i + 0), y * (j + 1),
+					          0, 0,
+						  x, 0,
+						    x, y,
+						    0, y
 		};
 		src_.push_back(p_vtx);
 
