@@ -33,45 +33,50 @@ namespace Mix
         WorkType   work_;
         
       }; // class IntArrayStorage
-      
-      //////////////////////////////////////////////////////////////
-      // óDêÊèáà î‰ärÉmÅ[Éh
-      //////////////////////////////////////////////////////////////
-      template<typename StorageType>
-      class SortingPiece
+
+      class Priority
       {
-      private:
-        std::size_t prio_;
-        StorageType storage_;
-        
+        int value_;
       public:
-        explicit SortingPiece(std::size_t prio = 0) noexcept : prio_(prio), storage_() {}
-        void* operator & () { return &storage_; }
-        bool operator == (const SortingPiece &rhs) const noexcept { return storage_ == rhs.storage_; }
-        bool operator < (const SortingPiece &rhs) const noexcept { return prio_ < rhs.prio_; }
+        explicit Priority(int value) : value_(value) {}
+        bool operator == (const Priority &rhs) const noexcept
+        { return value_ == rhs.value_; }
+        bool operator < (const Priority &rhs) const noexcept
+        { return value_ < rhs.value_; }
+      };
         
-      }; // class SortingPiece
       
-      template<typename StorageType>
-      bool operator != (const SortingPiece<StorageType> &lhs, const SortingPiece<StorageType> &rhs)
+      bool operator != (const Priority &lhs, const Priority &rhs)
       {
         return !(lhs == rhs);
       }
-      template<typename StorageType>
-      bool operator <= (const SortingPiece<StorageType> &lhs, const SortingPiece<StorageType> &rhs)
-      {
-        return !(lhs > rhs);
-      }
-      template<typename StorageType>
-      bool operator > (const SortingPiece<StorageType> &lhs, const SortingPiece<StorageType> &rhs)
+      bool operator > (const Priority &lhs, const Priority &rhs)
       {
         return (rhs < lhs);
       }
-      template<typename StorageType>
-      bool operator >= (const SortingPiece<StorageType> &lhs, const SortingPiece<StorageType> &rhs)
+      bool operator <= (const Priority &lhs, const Priority &rhs)
+      {
+        return !(lhs > rhs);
+      }
+      bool operator >= (const Priority &lhs, const Priority &rhs)
       {
         return (rhs <= lhs);
       }
+      
+      //////////////////////////////////////////////////////////////
+      // 
+      //////////////////////////////////////////////////////////////
+      template<typename StorageType>
+      class SortingPiece
+        : public Priority
+        , public StorageType
+      {
+      public:
+        explicit SortingPiece(std::size_t prio = 0) noexcept
+          : Priority(prio), StorageType() {}
+        void* operator & ()
+        { return &(*(static_cast<StorageType*>(this))); }
+      };
       
       template<class TList>
       struct MaxSizeOf;
@@ -89,7 +94,13 @@ namespace Mix
       template<class T1, class T2>
       struct MaxSizeOf<Loki::Typelist<T1, T2>>
       {
-        enum { value = (std::max)(static_cast<std::size_t>(sizeof(T1)), static_cast<std::size_t>(MaxSizeOf<T2>::value)) };
+        enum {
+          value =
+          (std::max)(
+            static_cast<std::size_t>(sizeof(T1)),
+            static_cast<std::size_t>(MaxSizeOf<T2>::value)
+          )
+        };
       };
       
       //////////////////////////////////////////////////////////////
@@ -121,15 +132,17 @@ namespace Mix
     } // namespace Private
     
     template<std::size_t Size>
-    using SortingPieceSizedOf = Private::SortingPiece<Private::IntArrayStorage<Size>>;
+    using SortingPieceSizedTo =
+      Private::SortingPiece<Private::IntArrayStorage<Size>>;
 
     template
     <
       class TList, // ñ{ÉCÉìÉXÉ^ÉìÉXì‡ÉÅÉÇÉäóÃàÊÇ…äiî[Ç≥ÇÍÇ§ÇÈå^Ç∑Ç◊ÇƒÇä‹ÇﬁÉ^ÉCÉvÉäÉXÉg
       std::size_t WorkCount,
       std::size_t WorkSize = Private::MaxSizeOf<TList>::value,
-      class SortingPolicy = Private::AscendingSortBy<TList>, // To<T>::value が定義されているポリシーメタ関数
-      class Piece = SortingPieceSizedOf<WorkSize>,
+      // To<T>::value が定義されているポリシーメタ関数
+      class SortingPolicy = Private::AscendingSortBy<TList>,
+      class Piece = SortingPieceSizedTo<WorkSize>,
       class Container = MultiSetArray<Piece, WorkCount>
     >
     class SortedStorage
