@@ -172,7 +172,9 @@ namespace Mix
         iterator result = LinkTo(position, input); // resultはinputを指す
         if (!result) return iterator(nullptr);
         
-        *result = val;
+        // *result = val;
+        new(&(*result)) value_type(val);
+        
         num_++;
         return result;
       }
