@@ -58,6 +58,34 @@ namespace Mix
 	   LeafIndexOf<Head, T>::value : LeafLength<Head>::value + temp };
   };
 
+  template<class TList>
+  struct MaxSizeOf
+  {
+    enum { value = 0 };
+  };
+      
+  template<>
+  struct MaxSizeOf<Loki::NullType>
+  {
+    enum { value = -1 };
+  };
+  template<class T>
+  struct MaxSizeOf<Loki::Typelist<T, Loki::NullType>>
+  {
+    enum { value = sizeof(T) };
+  };
+  template<class T1, class T2>
+  struct MaxSizeOf<Loki::Typelist<T1, T2>>
+  {
+    enum {
+      value =
+      (std::max)(
+        static_cast<std::size_t>(sizeof(T1)),
+        static_cast<std::size_t>(MaxSizeOf<T2>::value)
+      )
+    };
+  };
+      
 }
 
 #endif
