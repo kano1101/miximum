@@ -71,6 +71,12 @@ namespace Mix
       {
         return c_.erase(target);
       }
+
+    public:
+      static iterator Convert(pointer p) noexcept
+      {
+        return container_type::ConvertToIterator(p);
+      }
       
     }; // class MultiSetArray
     

@@ -54,47 +54,66 @@ namespace Mix
     public:
       using container_type         = Container;
 
-      // using value_type          = std::pair<int, Storage>;
-      using value_type             = typename container_type::value_type;
+      using key_type               = int;
+      using value_type             = Storage;
+      using pair_type              = typename container_type::pair_type;
       
-      using reference              = value_type&;
-      using const_reference        = const value_type&;
-      using pointer                = value_type*;
-      using const_pointer          = const value_type*;
+      using reference              = pair_type&;
+      using const_reference        = const pair_type&;
+      using pointer                = pair_type*;
+      using const_pointer          = const pair_type*;
       
       using size_type              = std::size_t;
       using difference_type        = std::ptrdiff_t;
       
       using iterator               = typename container_type::iterator;
 
-    // private:
-    //   constexpr static value_type dummy;
-    //   constexpr static std::uintptr_t GetStorageOffset()
-    //   {
-    //     return (
-    //       reinterpret_cast<std::uintptr_t>(&(dummy.second)) -
-    //       reinterpret_cast<std::uintptr_t>(&dummy)
-    //     );
-    //   }
-
-    // public:
-    //   constexpr static std::uintptr_t offset_ = GetStorageOffset();
-
     public:
-      static std::uintptr_t GetMappedTypeOffset()
-      {
-        static value_type dummy;
-        static std::uintptr_t result =
-          reinterpret_cast<std::uintptr_t>(&(dummy.second)) -
-          reinterpret_cast<std::uintptr_t>(&dummy);
-        return result;
-      }
+      // static std::uintptr_t GetMappedTypeOffset()
+      // {
+      //   static value_type v;
+      //   static value_type v1;
+      //   static iterator dummy(&v);
+      //   static std::uintptr_t result =
+      //     reinterpret_cast<std::uintptr_t>(&(dummy->second)) -
+      //     reinterpret_cast<std::uintptr_t>(&(dummy));
+      //   fprintf(stderr, "offset1                  :%d\n", result);
+      //   fprintf(stderr, "offset2                  :%d\n", dummy.DiffTest());
+      //   fprintf(stderr, "offset2 &(dummy)         :%p\n", &(dummy));
+      //   fprintf(stderr, "offset2 &(dummy->second) :%p\n", &(dummy->second));
+      //   return result;
+      // }
+      // iterator FindMappedTypeIterator(void* s)
+      // {
+      //   iterator result =
+      //     std::find_if(
+      //       c_.begin(),
+      //       c_.end(),
+      //       [&] (value_type& e) {
+      //         return (&(e.second) == s);
+      //       }
+      //     );
+      //     fprintf(stderr, "&(*result)=%p, &(result->first)=%p, &(result->second)=%p\n", &(*result), &(result->first), &(result->second));
+      //     fprintf(stderr, "void* s = %p\n", s);
+      //     void* testing = reinterpret_cast<void*>(
+      //       reinterpret_cast<std::uintptr_t>(s) -
+      //       reinterpret_cast<std::uintptr_t>(sizeof(typename value_type::first_type))
+      //     );
+      //     fprintf(stderr, "void* testing = %p\n", testing);
+      //     fprintf(stderr, "result\n");
+      //     result.TestPrint();
+      //     fprintf(stderr, "check\n");
+      //     iterator check(reinterpret_cast<value_type*>(testing));
+      //     check.TestPrint();
+          
+      //   return result;
+      // }
 
     private:
       container_type c_;
 
     public:
-      iterator insert(const value_type& x) noexcept
+      iterator insert(const pair_type& x) noexcept
       {
         return c_.insert(x);
       }
@@ -111,6 +130,12 @@ namespace Mix
       iterator end() noexcept
       {
         return c_.end();
+      }
+
+    public:
+      static iterator Convert(void* head) noexcept
+      {
+        return container_type::ConvertToPairIterator(head);
       }
       
     };

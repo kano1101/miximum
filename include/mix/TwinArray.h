@@ -133,8 +133,21 @@ namespace Mix
         }
         
       public:
-        std::ptrdiff_t Diff() {
-          return reinterpret_cast<int64_t>(&(**this)) - reinterpret_cast<int64_t>(p_);
+        std::intptr_t Diff() {
+          return reinterpret_cast<std::intptr_t>(&(**this)) - reinterpret_cast<std::intptr_t>(p_);
+        }
+        std::uintptr_t DiffTest() {
+          return reinterpret_cast<std::uintptr_t>(&((*this)->second)) - reinterpret_cast<std::uintptr_t>(p_);
+        }
+
+        void TestPrint()
+        {
+          fprintf(stderr, "TwinArray::iterator.p_         = %p\n", p_);
+          fprintf(stderr, "Diff()                         = %d\n", Diff());
+          fprintf(stderr, "DiffTest()                     = %d\n", DiffTest());
+          fprintf(stderr, "&(*TwinArray::iterator)        = %p :&(p_->data_)\n", &(**this));
+          fprintf(stderr, "&(TwinArray::iterator->first)  = %p\n", &((*this)->first));
+          fprintf(stderr, "&(TwinArray::iterator->second) = %p\n", &((*this)->second));
         }
         
       private:
@@ -157,6 +170,22 @@ namespace Mix
       iterator end() const noexcept { return iterator(used_); }
       iterator free_begin() const noexcept { return iterator(free_->next_); }
       iterator free_end() const noexcept { return iterator(free_); }
+
+    public:
+      static iterator ConvertToIterator(pointer data) noexcept
+      {
+        static value_type v;
+        static iterator dummy(&v);
+        std::uintptr_t offset =
+          reinterpret_cast<std::uintptr_t>(&(*dummy)) -
+          reinterpret_cast<std::uintptr_t>(dummy.p_);
+        return iterator(
+          reinterpret_cast<void*>(
+            reinterpret_cast<std::uintptr_t>(data) -
+            offset
+          )
+        );
+      }
 
     public:
       bool empty() const noexcept { return begin() == end(); } // ダミーの次もダミー
