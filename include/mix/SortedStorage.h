@@ -1,26 +1,19 @@
-//
-//  Created by 狩野 亮 on 2020/03/29.
-//  Copyright © 2020年 狩野 亮. All rights reserved.
-//
-
 #ifndef __SORTED_STORAGE_H__
 #define __SORTED_STORAGE_H__
 
-#include <loki/Typelist.h>
-#include <loki/Singleton.h>
-
-#include "MultiSetArray.h"
+#include <algorithm>
+#include "MultiMapArray.h"
+#include "Leaf.h"
 
 namespace Mix
 {
-  
-  namespace Private {}
-  namespace
-  {
 
-    namespace Private
-    {
-      
+  namespace Private {}
+
+  namespace {
+
+    namespace Private {
+
       template<std::size_t MaxByte>
       class IntArrayStorage
       {
@@ -28,132 +21,40 @@ namespace Mix
         using WorkType = int[(MaxByte + 3) / 4];
         
         void* operator & () noexcept { return static_cast<void*>(work_); }
+        bool operator < (const IntArrayStorage & rhs) const noexcept
+        { return work_ < rhs.work_; }
         
       private:
         WorkType   work_;
         
       }; // class IntArrayStorage
 
-      class Priority
-      {
-        int value_;
-      public:
-        explicit Priority(int value) : value_(value) {}
-        bool operator == (const Priority &rhs) const noexcept
-        { return value_ == rhs.value_; }
-        bool operator < (const Priority &rhs) const noexcept
-        { return value_ < rhs.value_; }
-      };
-        
-      
-      bool operator != (const Priority &lhs, const Priority &rhs)
-      {
-        return !(lhs == rhs);
-      }
-      bool operator > (const Priority &lhs, const Priority &rhs)
-      {
-        return (rhs < lhs);
-      }
-      bool operator <= (const Priority &lhs, const Priority &rhs)
-      {
-        return !(lhs > rhs);
-      }
-      bool operator >= (const Priority &lhs, const Priority &rhs)
-      {
-        return (rhs <= lhs);
-      }
-      
-      //////////////////////////////////////////////////////////////
-      // 
-      //////////////////////////////////////////////////////////////
-      template<typename StorageType>
-      class SortingPiece
-        : public Priority
-        , public StorageType
-      {
-      public:
-        explicit SortingPiece(std::size_t prio = 0) noexcept
-          : Priority(prio), StorageType() {}
-        void* operator & ()
-        { return &(*(static_cast<StorageType*>(this))); }
-      };
-      
-      template<class TList>
-      struct MaxSizeOf;
-      
-      template<>
-      struct MaxSizeOf<Loki::NullType>
-      {
-        enum { value = -1 }; // É^ÉCÉvÉäÉXÉgÇ™ãÛÇ»ÇÁó·äO
-      };
-      template<class T>
-      struct MaxSizeOf<Loki::Typelist<T, Loki::NullType>>
-      {
-        enum { value = sizeof(T) };
-      };
-      template<class T1, class T2>
-      struct MaxSizeOf<Loki::Typelist<T1, T2>>
-      {
-        enum {
-          value =
-          (std::max)(
-            static_cast<std::size_t>(sizeof(T1)),
-            static_cast<std::size_t>(MaxSizeOf<T2>::value)
-          )
-        };
-      };
-      
-      //////////////////////////////////////////////////////////////
-      // í«â¡éûë}ì¸à íuåàíËÉÅÉ^ä÷êî ::valueÇ≈éÊìæ
-      //////////////////////////////////////////////////////////////
-      template<class TList>
-      struct AscendingSortBy
-      {
-        // TÇÃTListÇ…Ç®ÇØÇÈï¿Ç—à íuÇ…åàíËÇ∑ÇÈÉ|ÉäÉVÅ[
-        template<class T>
-        struct To
-        {
-          enum { value = Loki::TL::IndexOf<TList, T>::value };
-        }; // struct To
-        
-      }; // struct AscendingSortBy
-      
-      template<class TList>
-      struct AlwaysPushFront
-      {
-        template<class T>
-        struct To
-        {
-          enum { value = 0 };
-        };
-        
-      }; // struct AlwaysPushFront
-      
     } // namespace Private
-    
-    template<std::size_t Size>
-    using SortingPieceSizedTo =
-      Private::SortingPiece<Private::IntArrayStorage<Size>>;
 
+    template<class TList>
+    struct AscendingSortBy
+    {
+      template<class T>
+      struct To
+      {
+        enum { value = Loki::TL::IndexOf<TList, T>::value };
+      }; // struct To
+        
+    }; // struct AscendingSortBy
+      
     template
     <
-      class TList, // ñ{ÉCÉìÉXÉ^ÉìÉXì‡ÉÅÉÇÉäóÃàÊÇ…äiî[Ç≥ÇÍÇ§ÇÈå^Ç∑Ç◊ÇƒÇä‹ÇﬁÉ^ÉCÉvÉäÉXÉg
       std::size_t WorkCount,
-      std::size_t WorkSize = Private::MaxSizeOf<TList>::value,
-      // To<T>::value が定義されているポリシーメタ関数
-      class SortingPolicy = Private::AscendingSortBy<TList>,
-      class Piece = SortingPieceSizedTo<WorkSize>,
-      class Container = MultiSetArray<Piece, WorkCount>
+      std::size_t WorkSize,
+      class Storage = Private::IntArrayStorage<WorkSize>,
+      class Container = MultiMapArray<int, Storage, WorkCount>
     >
     class SortedStorage
     {
     public:
-      using ProductList            = TList;
-      using OrderSorting           = SortingPolicy;
-      using PieceType              = Piece;
-      
       using container_type         = Container;
-      
+
+      // using value_type          = std::pair<int, Storage>;
       using value_type             = typename container_type::value_type;
       
       using reference              = value_type&;
@@ -165,15 +66,33 @@ namespace Mix
       using difference_type        = std::ptrdiff_t;
       
       using iterator               = typename container_type::iterator;
-//      using const_iterator         = typename container_type::const_iterator;
-//      using reverse_iterator       = typename container_type::reverse_iterator;
-//      using const_reverse_iterator = typename container_type::const_reverse_iterator;
-//      using node_type;
-//      using allocator_type;
-      
+
+    // private:
+    //   constexpr static value_type dummy;
+    //   constexpr static std::uintptr_t GetStorageOffset()
+    //   {
+    //     return (
+    //       reinterpret_cast<std::uintptr_t>(&(dummy.second)) -
+    //       reinterpret_cast<std::uintptr_t>(&dummy)
+    //     );
+    //   }
+
+    // public:
+    //   constexpr static std::uintptr_t offset_ = GetStorageOffset();
+
+    public:
+      static std::uintptr_t GetMappedTypeOffset()
+      {
+        static value_type dummy;
+        static std::uintptr_t result =
+          reinterpret_cast<std::uintptr_t>(&(dummy.second)) -
+          reinterpret_cast<std::uintptr_t>(&dummy);
+        return result;
+      }
+
     private:
       container_type c_;
-      
+
     public:
       iterator insert(const value_type& x) noexcept
       {
@@ -183,7 +102,7 @@ namespace Mix
       {
         return c_.erase(target);
       }
-      
+
     public:
       iterator begin() noexcept
       {
@@ -194,10 +113,13 @@ namespace Mix
         return c_.end();
       }
       
-    }; // class SortedStorage
+    };
+
+    // template<std::size_t Count, std::size_t Size, class Storage, class Container>
+    // constexpr value_type SortedStorage<Count, Size, Storage, Container>::dummy;
     
   } // namespace
-  
-} // namespace Mix
 
+} // namespace Mix
+ 
 #endif
