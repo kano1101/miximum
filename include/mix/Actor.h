@@ -9,12 +9,13 @@
 namespace Mix
 {
 
+  template<class Renderer>
   class Actor
   {
   public:
     virtual ~Actor() {}
-    virtual void Update() {}
-    virtual void Draw() const {}
+    virtual void Update() = 0;
+    virtual void Draw(Renderer&) = 0;
   };
 
 } // namespace Mix

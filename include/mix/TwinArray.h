@@ -6,6 +6,8 @@
 #ifndef __TWIN_ARRAY_H__
 #define __TWIN_ARRAY_H__
 
+#include <cstddef>
+
 namespace Mix
 {
 
@@ -22,7 +24,6 @@ namespace Mix
       private:
         using node_type          = Node;
         using node_pointer       = node_type*;
-//        using node_const_pointer = const node_type*;
 
       public:
         NodeBase() : prev_(nullptr) , next_(nullptr) {}
