@@ -6,6 +6,8 @@
 #ifndef _MIX_MULTI_MAP_ARRAY_H_
 #define _MIX_MULTI_MAP_ARRAY_H_
 
+#include <utility>
+
 #include <loki/Typelist.h>
 #include <loki/Singleton.h>
 
@@ -17,7 +19,7 @@ namespace Mix
   struct less_inner {
     template < class T, class U >
     bool operator () ( const T &lhs, const U &rhs) const
-    { return bool(lhs < rhs); }
+    { return lhs < rhs; }
   };
 
   template
@@ -50,43 +52,42 @@ namespace Mix
       
   private:
     container_type c_;
-      
-  public:
-    iterator insert(const pair_type& x) noexcept
-    {
-      return c_.insert(x);
-    }
-    iterator erase(iterator target) noexcept
-    {
-      return c_.erase(target);
-    }
-      
-  public:
-    iterator begin() noexcept
-    {
-      return c_.begin();
-    }
-    iterator end() noexcept
-    {
-      return c_.end();
-    }
 
   public:
-    static iterator ConvertToPairIterator(void* head) noexcept
-    {
-      static pair_type p;
-      std::uintptr_t offset =
-        reinterpret_cast<std::uintptr_t>(&(p.second)) -
-        reinterpret_cast<std::uintptr_t>(&p);
-      return container_type::Convert(
-        reinterpret_cast<pointer>(
-          reinterpret_cast<void*>(
-            reinterpret_cast<std::uintptr_t>(head) -
-            offset
-          )
-        )
-      );
+    template<class ...Args>
+    MultiMapArray(size_type sz, Args ...args) : c_(sz, args...) {
     }
+    
+  public:
+    iterator insert(const pair_type& x) noexcept { return c_.insert(x); }
+    iterator erase(iterator target) noexcept { return c_.erase(target); }
+      
+  public:
+    iterator begin() noexcept { return c_.begin(); }
+    iterator end() noexcept { return c_.end(); }
+
+  public:
+    bool empty() const noexcept { return c_.empty(); }
+    bool full() const noexcept { return c_.full(); }
+    std::size_t max_size() const noexcept { return c_.max_size(); }
+    std::size_t size() const noexcept { return c_.size(); }
+      
+  // public:
+  //   static iterator GetIterator(void* head) noexcept
+  //   {
+  //     static pair_type p = { 0, int() };
+  //     std::uintptr_t offset =
+  //       reinterpret_cast<std::uintptr_t>(&(p.second)) -
+  //       reinterpret_cast<std::uintptr_t>(&p);
+  //     return container_type::GetIterator(
+  //       reinterpret_cast<pointer>(
+  //         reinterpret_cast<void*>(
+  //           reinterpret_cast<std::uintptr_t>(head) -
+  //           offset
+  //         )
+  //       )
+  //     );
+  //   }
     
   }; // class SortedStorage
     
