@@ -1,5 +1,4 @@
-#ifndef __MIX_DIRECTOR_H__
-#define __MIX_DIRECTOR_H__
+#pragma once
 
 #include <map>
 #include <unordered_set>
@@ -21,6 +20,7 @@ namespace Mix {
     template<class T>
     ListedOrder(T t)
       : priority_(Loki::TL::IndexOf<TList, T>::value) {
+      (void) t;
     }
     bool operator < (const ListedOrder& rhs) const {
       return priority_ < rhs.priority_;
@@ -40,6 +40,7 @@ namespace Mix {
     template<class T>
     PoolMalloc(T t)
       : size_(sizeof(T)), pool_(static_cast<void*>(std::malloc(size_))) {
+      (void) t;
     }
     PoolMalloc(const PoolMalloc& obj)
       : size_(obj.size_), pool_(static_cast<void*>(std::malloc(size_))) {
@@ -65,6 +66,7 @@ namespace Mix {
   public:
     template<class T>
     PoolStatic(T t) {
+      (void) t;
     }
     bool operator < (const PoolStatic& rhs) const {
       return this < &rhs;
@@ -255,5 +257,3 @@ namespace Mix {
   
 } // namespace Mix
 
-
-#endif

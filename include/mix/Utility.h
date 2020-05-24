@@ -1,5 +1,4 @@
-#ifndef __MIX_UTILITY_H__
-#define __MIX_UTILITY_H__
+#pragma once
 
 #include <algorithm>
 #include <cmath>
@@ -84,13 +83,13 @@ namespace Mix {
     float lastTime_;
   };
   template<class Timer, class Action>
-  class Executor
+  class Invoker
   {
   public:
-    Executor(float limitTime, const Action& action)
+    Invoker(float limitTime, const Action& action)
       : timer_(limitTime), action_(action) {
     }
-    void ExecuteOnTime(float time) {
+    void operator()(float time) {
       Update(time);
       if (IsTimeout()) {
         action_();
@@ -203,4 +202,3 @@ namespace Mix {
       
 }
 
-#endif

@@ -1,6 +1,8 @@
 #pragma once
 
-#include "loki//TypeManip.h"
+#include <loki/TypeManip.h>
+
+#define UNUSED(x) ((void)x)
 
 namespace Mix
 {
@@ -63,15 +65,15 @@ namespace Mix
 
     void Initialize(double x, double y, double z, double t, Loki::Type2Type<Dimension1D>)
     {
-      this->x_ = x;
+      this->x_ = x; UNUSED(y); UNUSED(z); UNUSED(t);
     }
     void Initialize(double x, double y, double z, double t, Loki::Type2Type<Dimension2D>)
     {
-      this->x_ = x; this->y_ = y;
+      this->x_ = x; this->y_ = y; UNUSED(z); UNUSED(t);
     }
     void Initialize(double x, double y, double z, double t, Loki::Type2Type<Dimension3D>)
     {
-      this->x_ = x; this->y_ = y; this->z_ = z;
+      this->x_ = x; this->y_ = y; this->z_ = z; UNUSED(t);
     }
     void Initialize(double x, double y, double z, double t, Loki::Type2Type<Dimension4D>)
     {
@@ -101,15 +103,15 @@ namespace Mix
 
     void Inverse(bool x, bool y, bool z, bool t, Loki::Type2Type<Dimension1D>)
     {
-      this->x_ *= x ? -1 : 1;
+      this->x_ *= x ? -1 : 1; UNUSED(y); UNUSED(z); UNUSED(t);
     }
     void Inverse(bool x, bool y, bool z, bool t, Loki::Type2Type<Dimension2D>)
     {
-      this->x_ *= x ? -1 : 1; this->y_ *= y ? -1 : 1;
+      this->x_ *= x ? -1 : 1; this->y_ *= y ? -1 : 1; UNUSED(z); UNUSED(t);
     }
     void Inverse(bool x, bool y, bool z, bool t, Loki::Type2Type<Dimension3D>)
     {
-      this->x_ *= x ? -1 : 1; this->y_ *= y ? -1 : 1; this->z_ *= z ? -1 : 1;
+      this->x_ *= x ? -1 : 1; this->y_ *= y ? -1 : 1; this->z_ *= z ? -1 : 1; UNUSED(t);
     }
     void Inverse(bool x, bool y, bool z, bool t, Loki::Type2Type<Dimension4D>)
     {

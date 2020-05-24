@@ -1,36 +1,39 @@
-#ifndef _MIX_SPRITE_H_
-#define _MIX_SPRITE_H_
+#pragma once
 
+#include <iostream>
 #include <string>
+#include <loki/Singleton.h>
+#include <mix/SharedFactory.h>
+#include <mix/Texture.h>
 #include <mix/Vector.h>
-#include <mix/Actor.h>
 
-namespace Mix
-{
+namespace Mix {
 
-  class SpriteRenderer {
-  public:
-    virtual ~SpriteRenderer() {}
-    virtual void Render(const std::string& fpath, const Vector2D& pos) = 0;
-  };
+  namespace Private {
+    using TextureSharer =
+      Loki::SingletonHolder<SharedFactory<Texture, std::string, Loader>>; // ここのLoaderを忘れると動作しない
+  }
   
-  class Sprite2D
-    : public Actor<SpriteRenderer>
-  {
+  class Sprite {
   public:
-      
-  public:
-    Sprite2D(const std::string& fpath, Vector2D& pos)
+    Sprite(const std::string& fpath, unsigned int cx, unsigned int cy, const Vector2D& pos)
       : fpath_(fpath), pos_(pos) {
+      std::cout << "Sprite ctor start." << std::endl;
+      auto& factory = Private::TextureSharer::Instance();
+      std::cout << "Sprite ctor step1." << std::endl;
+      Loader loader = Loader(fpath, cx, cy);
+      std::cout << "Sprite ctor step2." << std::endl;
+      // 関数オブジェクトLoader登録：解放すべきインスタンス保持される
+      bool result = factory.Register(fpath_, loader); // TODO: cx, cy へ初期値設定しなければならない
+      std::cout << "result = " << result << std::endl;
     }
-    virtual void Draw(SpriteRenderer& renderer) override {
-      renderer.Render(fpath_, pos_);//2
+    virtual void Draw() const {
+      Private::TextureSharer::Instance().GetSharedPointer(fpath_)->Render(pos_);//2
     }
   private:
-    std::string fpath_;
-    Vector2D& pos_;
+    const std::string fpath_;
+    const Vector2D& pos_;
   };
 
 } // namespace Mix
 
-#endif

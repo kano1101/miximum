@@ -1,10 +1,4 @@
-//
-//  Created by 狩野 亮 on 2020/03/29.
-//  Copyright © 2020年 狩野 亮. All rights reserved.
-//
-
-#ifndef __MIX_CREATOR_H__
-#define __MIX_CREATOR_H__
+#pragma once
 
 #include <memory>
 
@@ -52,6 +46,7 @@ namespace Mix
         return p;
       }
       static void Destroy(T* p) {
+        (void) p;
       }
     }; // struct NoDestroyCreator
 
@@ -77,4 +72,3 @@ namespace Mix
 
 } // namespace Mix
 
-#endif
