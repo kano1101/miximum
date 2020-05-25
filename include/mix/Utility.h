@@ -1,5 +1,8 @@
+#pragma once
+
 #include <algorithm>
 #include <cmath>
+#include <loki/Typelist.h>
 
 namespace Mix {
   
@@ -80,13 +83,13 @@ namespace Mix {
     float lastTime_;
   };
   template<class Timer, class Action>
-  class Executor
+  class Invoker
   {
   public:
-    Executor(float limitTime, const Action& action)
+    Invoker(float limitTime, const Action& action)
       : timer_(limitTime), action_(action) {
     }
-    void ExecuteOnTime(float time) {
+    void operator()(float time) {
       Update(time);
       if (IsTimeout()) {
         action_();
@@ -108,4 +111,94 @@ namespace Mix {
     Action action_;
   };
 
+  template<class T>
+  class Less {
+  public:
+    Less(const T& value)
+      : value_(value) {
+    }
+    bool operator < (const Less& rhs) const {
+      return value_ < rhs.value_;
+    }
+  private:
+    T value_;
+  };
+
+  template<class TList>
+  struct LeafLength;
+
+  template<>
+  struct LeafLength<Loki::NullType>
+  {
+    enum { value = 0 };
+  };
+  template<class T, class U>
+  struct LeafLength<Loki::Typelist<T, U>>
+  {
+    enum { value = 1 + LeafLength<U>::value };
+  };
+  template<class T1, class T2, class U>
+  struct LeafLength<Loki::Typelist<Loki::Typelist<T1, T2>, U>>
+  {
+    enum { value = LeafLength<Loki::Typelist<T1, T2>>::value + LeafLength<U>::value };
+  };
+
+  template<class TList, class T>
+  struct LeafIndexOf;
+
+  template<class T>
+  struct LeafIndexOf<Loki::NullType, T>
+  {
+    enum { value = -1 };
+  };
+  template<class Tail, class T>
+  struct LeafIndexOf<Loki::Typelist<T, Tail>, T>
+  {
+    enum { value = 0 };
+  };
+  template<class Head, class Tail, class T>
+  struct LeafIndexOf<Loki::Typelist<Head, Tail>, T>
+  {
+    enum { value = Loki::TL::IndexOf<Loki::Typelist<Head, Tail>, T>::value };
+  };
+  template<class Head1, class Head2, class Tail, class T>
+  struct LeafIndexOf<Loki::Typelist<Loki::Typelist<Head1, Head2>, Tail>, T>
+  {
+  private:
+    using Head = Loki::Typelist<Head1, Head2>;
+    enum { temp = LeafIndexOf<Tail, T>::value };
+  public:
+    enum { value = temp == -1 ?
+	   LeafIndexOf<Head, T>::value : LeafLength<Head>::value + temp };
+  };
+
+  template<class TList>
+  struct MaxSizeOf
+  {
+    enum { value = 0 };
+  };
+      
+  template<>
+  struct MaxSizeOf<Loki::NullType>
+  {
+    enum { value = -1 };
+  };
+  template<class T>
+  struct MaxSizeOf<Loki::Typelist<T, Loki::NullType>>
+  {
+    enum { value = sizeof(T) };
+  };
+  template<class T1, class T2>
+  struct MaxSizeOf<Loki::Typelist<T1, T2>>
+  {
+    enum {
+      value =
+      (std::max)(
+        static_cast<std::size_t>(sizeof(T1)),
+        static_cast<std::size_t>(MaxSizeOf<T2>::value)
+      )
+    };
+  };
+      
 }
+
