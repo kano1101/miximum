@@ -2,6 +2,7 @@
 
 #include <map>
 #include <unordered_set>
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <loki/Singleton.h>
 #include <mix/Creator.h>
 #include <mix/Utility.h>

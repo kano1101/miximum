@@ -33,6 +33,10 @@ namespace Mix {
         return (i->second)();
       assert(!"SharedFactory取得エラー");
     }
+
+    std::size_t Count(const IdentifierType& id) {
+      return static_cast<std::size_t>(m_.count(id));
+    }
     
   private:
     IdToProductMap m_;

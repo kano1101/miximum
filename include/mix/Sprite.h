@@ -18,17 +18,18 @@ namespace Mix {
   public:
     Sprite(const std::string& fpath, unsigned int cx, unsigned int cy, const Vector2D& pos)
       : fpath_(fpath), pos_(pos) {
-      std::cout << "Sprite ctor start." << std::endl;
       auto& factory = Private::TextureSharer::Instance();
-      std::cout << "Sprite ctor step1." << std::endl;
-      Loader loader = Loader(fpath, cx, cy);
-      std::cout << "Sprite ctor step2." << std::endl;
+      auto count = factory.Count(fpath_);
+      if ( count ) return;
+      std::cout << "TEST Message" << count << ", " << std::endl;
+      assert ( !count && "エラー：画像データはすでに登録されています" );
+      Loader loader = Loader(fpath, cx, cy); // TODO:LoaderはSingletonにしなければならないかも
       // 関数オブジェクトLoader登録：解放すべきインスタンス保持される
-      bool result = factory.Register(fpath_, loader); // TODO: cx, cy へ初期値設定しなければならない
-      std::cout << "result = " << result << std::endl;
+      bool result = factory.Register(fpath_, loader);
+      assert(result && "画像データオブジェクトの登録システムエラー");
     }
     virtual void Draw() const {
-      Private::TextureSharer::Instance().GetSharedPointer(fpath_)->Render(pos_);//2
+      Private::TextureSharer::Instance().GetSharedPointer(fpath_)->Render(pos_);
     }
   private:
     const std::string fpath_;
