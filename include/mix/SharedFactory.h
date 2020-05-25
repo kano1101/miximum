@@ -42,23 +42,5 @@ namespace Mix {
     IdToProductMap m_;
   };
 
-  // template<class Product, typename  IdentifierType, class Loader = Loki::Functor<Product*>>
-  // class SharedFactory {
-  // public:
-  //   //    using SharedProductPtr = std::shared_ptr<Product>;
-
-  //   Product* CreateObject(const IdentifierType& id) {
-  //     return factory_.CreateObject(id);
-  //   }
-  //   bool Register(const IdentifierType& id, Loader loader) {
-  //     return factory_.Register(id, loader); // TODO: cx, cy へ初期値設定しなければならない
-  //   }
-  //   bool Unregister(const IdentifierType& id) {
-  //     return factory_.Unregister(id);
-  //   }
-  // private:
-  //   Loki::Factory<Product, IdentifierType, Loader> factory_;
-  // };
-
 }
 
