@@ -143,35 +143,77 @@ namespace Mix {
     enum { value = LeafLength<Loki::Typelist<T1, T2>>::value + LeafLength<U>::value };
   };
 
-  template<class TList, class T>
-  struct LeafIndexOf;
+  namespace TL {
 
-  template<class T>
-  struct LeafIndexOf<Loki::NullType, T>
-  {
-    enum { value = -1 };
-  };
-  template<class Tail, class T>
-  struct LeafIndexOf<Loki::Typelist<T, Tail>, T>
-  {
-    enum { value = 0 };
-  };
-  template<class Head, class Tail, class T>
-  struct LeafIndexOf<Loki::Typelist<Head, Tail>, T>
-  {
-    enum { value = Loki::TL::IndexOf<Loki::Typelist<Head, Tail>, T>::value };
-  };
-  template<class Head1, class Head2, class Tail, class T>
-  struct LeafIndexOf<Loki::Typelist<Loki::Typelist<Head1, Head2>, Tail>, T>
-  {
-  private:
-    using Head = Loki::Typelist<Head1, Head2>;
-    enum { temp = LeafIndexOf<Tail, T>::value };
-  public:
-    enum { value = temp == -1 ?
-	   LeafIndexOf<Head, T>::value : LeafLength<Head>::value + temp };
-  };
+    template
+      <
+      typename T1 = Loki::NullType, typename T2 = Loki::NullType, typename T3 = Loki::NullType,
+      typename T4 = Loki::NullType, typename T5 = Loki::NullType, typename T6 = Loki::NullType,
+      typename T7 = Loki::NullType, typename T8 = Loki::NullType, typename T9 = Loki::NullType,
+      typename T10 = Loki::NullType, typename T11 = Loki::NullType, typename T12 = Loki::NullType,
+      typename T13 = Loki::NullType, typename T14 = Loki::NullType, typename T15 = Loki::NullType,
+      typename T16 = Loki::NullType, typename T17 = Loki::NullType, typename T18 = Loki::NullType
+      >
+    struct Connect {
+    private:
+      typedef typename Connect
+        <
+        T2, T3, T4,
+        T5, T6, T7,
+        T8, T9, T10,
+        T11, T12, T13,
+        T14, T15, T16,
+        T17, T18
+        >
+        ::Result TailResult;
 
+    public:
+      typedef typename Loki::TL::Append<T1, TailResult>::Result Result;
+    };
+
+    template<typename T>
+    struct Connect<T, Loki::NullType> {
+      typedef T Result;
+    };
+
+    template<>
+    struct Connect<> {
+      typedef Loki::NullType Result;
+    };
+
+    /////////////////////////////////////////////////////////////////////
+    // タイプリストのネストされたリスト版IndexOf
+    template<class TList, class T>
+    struct LeafIndexOf;
+
+    template<class T>
+    struct LeafIndexOf<Loki::NullType, T>
+    {
+      enum { value = -1 };
+    };
+    template<class Tail, class T>
+    struct LeafIndexOf<Loki::Typelist<T, Tail>, T>
+    {
+      enum { value = 0 };
+    };
+    template<class Head, class Tail, class T>
+    struct LeafIndexOf<Loki::Typelist<Head, Tail>, T>
+    {
+      enum { value = Loki::TL::IndexOf<Loki::Typelist<Head, Tail>, T>::value };
+    };
+    template<class Head1, class Head2, class Tail, class T>
+    struct LeafIndexOf<Loki::Typelist<Loki::Typelist<Head1, Head2>, Tail>, T>
+    {
+    private:
+      using Head = Loki::Typelist<Head1, Head2>;
+      enum { temp = LeafIndexOf<Tail, T>::value };
+    public:
+      enum { value = temp == -1 ?
+             LeafIndexOf<Head, T>::value : LeafLength<Head>::value + temp };
+    };
+
+  } // namespace TL
+  
   template<class TList>
   struct MaxSizeOf
   {
