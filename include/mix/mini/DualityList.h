@@ -163,15 +163,13 @@ namespace Mix
     };
       
   private:
-    //    node_type nodes_[MaxSize]; // 固定メモリ領域の最先端を常に指し示す
+    std::size_t num_; // 実行時取り扱っている要素数（常時変動）
+      
     node_pointer nodes_; // 固定メモリ領域の最先端を常に指し示す
 
     node_pointer used_; // 使用中メモリ領域の最後尾ノードのひとつあとのダミーノード。循環リンクにする
     node_pointer free_; // 未使用メモリ領域の最後尾ノードのひとつあとのダミーノード。循環リンクにする
 
-  private:
-    std::size_t num_; // 実行時取り扱っている要素数（常時変動）
-      
   public:
     // 本クラスを範囲forなど、コンテナの形で扱うことができるようにする
     iterator begin() const noexcept { return iterator(used_->next_); }
@@ -250,10 +248,11 @@ namespace Mix
       , free_(new node_type{args...}) // 同上
     {
       assert(0 <= num_);
+      assert(1 <= MaxSize);
       assert(num_ <= MaxSize);
 
       // ワークメモリ初期化(work_確保)
-      for (int i = 0; i < MaxSize; i++)
+      for (unsigned int i = 0; i < MaxSize; i++)
       {
         //        new(nodes_ + i) Node();
 
@@ -263,10 +262,10 @@ namespace Mix
       { // リンクリストの連結
 
         // 最後尾のインデックス
-        const int c = MaxSize - 1;
+        const unsigned int c = MaxSize - 1;
 
         // 各ノードの前後連結リンクを結ぶ
-        for (int i = 0; i < c; i++)
+        for (unsigned int i = 0; i < c; i++)
         {
           nodes_[i].next_ = &nodes_[i + 1];
           nodes_[i + 1].prev_ = &nodes_[i];
@@ -294,7 +293,7 @@ namespace Mix
     }
     ~DualityList() noexcept
     {
-      for (int i = 0; i < MaxSize; i++)
+      for (unsigned int i = 0; i < MaxSize; i++)
       {
         nodes_[i].data_.~T();
       }
