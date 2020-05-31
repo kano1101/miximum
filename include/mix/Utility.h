@@ -3,18 +3,28 @@
 #include <algorithm>
 #include <cmath>
 #include <loki/Typelist.h>
+#pragma GCC diagnostic ignored "-Wunused-function"
 
 namespace Mix {
-  
-  template<typename T>
-  T Clamp(T x, T low, T high) {
-    assert(low <= high);
-    return std::min(std::max(x, low), high);
-  }
-  float Wrap(float x, float low, float high) {
-    assert(low < high);
-    const float n = std::fmod(x - low, high - low);
-    return (n >= 0) ? (n + low) : (n + high);
+
+  namespace {
+    template<typename T>
+    T Clamp(T x, T low, T high) {
+      assert(low <= high);
+      return std::min(std::max(x, low), high);
+    }
+    template<typename T>
+    T Wrap(T x, T low, T high) {
+      assert(low < high);
+      const T n = (x - low) % (high - low);
+      return (n >= 0) ? (n + low) : (n + high);
+    }
+    template<>
+    float Wrap<float>(float x, float low, float high) {
+      assert(low < high);
+      const float n = std::fmod(x - low, high - low);
+      return (n >= 0) ? (n + low) : (n + high);
+    }
   }
   
   template<typename T>

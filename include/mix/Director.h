@@ -164,7 +164,7 @@ namespace Mix {
     class TList,
     class OrderingPolicy = ListedOrder<TList>,
     class PoolPolicy = PoolMalloc<TList>,
-    class Container = DualityMultiMap<OrderingPolicy, PoolPolicy>,
+    class Container = MultiMap<OrderingPolicy, PoolPolicy>,
     class IterationPolicy = SafeShiftIteration<typename Container::iterator>
     >
   class MemoryManager

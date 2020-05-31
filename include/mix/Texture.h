@@ -28,20 +28,14 @@ namespace Mix {
           unsigned int th)
       : id_(id)
     {
-      std::cout << "Texture ctor start" << std::endl;
       GLfloat w = tw / cx; // chip w-h
       GLfloat h = th / cy;
-      std::cout << "Texture ctor step1." << std::endl;
     
       src_ = new GLfloat[8] { 0, 0, w, 0, w, h, 0, h };
-      std::cout << "Texture ctor step2." << std::endl;
 
       GLfloat u = static_cast<GLfloat>(1.0f / cx);
       GLfloat v = static_cast<GLfloat>(1.0f / cy);
 
-      std::cout << "Texture ctor step3." << std::endl;
-      std::cout << "Texture ctor stepping :(" << cx << ", " << cy << ")" << std::endl;
-      
       for( unsigned int j = 0; j < cy; j++ )
         for( unsigned int i = 0; i < cx; i++ )
           uv_.push_back(new GLfloat[8] {
@@ -50,7 +44,6 @@ namespace Mix {
             u * (i + 1), v * (j + 1),
             u * (i + 0), v * (j + 1),
           });
-      std::cout << "Texture ctor end." << std::endl;
     }
     ~Texture() {
       delete[] src_;
