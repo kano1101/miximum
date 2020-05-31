@@ -3,12 +3,12 @@
 //  Copyright © 2020年 狩野 亮. All rights reserved.
 //
 
-#ifndef __MULTISET_ARRAY_H__
-#define __MULTISET_ARRAY_H__
+#pragma once
 
 #include <algorithm>
 
-#include "DualityList.h"
+#include <mix/mini/DualityList.h>
+#include <mix/mini/PerformanceTester.h>
 
 namespace Mix
 {
@@ -60,11 +60,28 @@ namespace Mix
       
   private:
     iterator lower_bound(const key_type& x) const noexcept {
-      return std::lower_bound(c_.begin(), c_.end(), x, key_compare());
+      Performance::Instance().Start(5000);
+      auto b = c_.begin();
+      Performance::Instance().Finish(5000);
+      Performance::Instance().Start(6000);
+      auto e = c_.end();
+      Performance::Instance().Finish(6000);
+      Performance::Instance().Start(7000);
+      auto r = std::lower_bound(b, e, x, key_compare());
+      Performance::Instance().Finish(7000);
+      return r;
     }
       
   public:
-    iterator insert(const key_type& x) noexcept { return c_.insert(lower_bound(x), x); }
+    iterator insert(const key_type& x) noexcept {
+      Performance::Instance().Start(10000);
+      auto it = lower_bound(x);
+      Performance::Instance().Finish(10000);
+      Performance::Instance().Start(20000);
+      auto ret = c_.insert(it, x);
+      Performance::Instance().Finish(20000);
+      return ret;
+    }
     iterator erase(iterator target) noexcept { return c_.erase(target); }
 
   // public:
@@ -76,4 +93,3 @@ namespace Mix
     
 } // namespace Mix
 
-#endif

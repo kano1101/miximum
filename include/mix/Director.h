@@ -8,6 +8,8 @@
 #include <mix/Utility.h>
 #include <mix/mini/MultiMapArray.h>
 
+#include <mix/mini/PerformanceTester.h>
+
 namespace Mix {
 
   ///////////////////////////////////////////////////////////////
@@ -164,7 +166,7 @@ namespace Mix {
     class TList,
     class OrderingPolicy = ListedOrder<TList>,
     class PoolPolicy = PoolMalloc<TList>,
-    class Container = MultiMap<OrderingPolicy, PoolPolicy>,
+    class Container = DualityMultiMap<OrderingPolicy, PoolPolicy>,
     class IterationPolicy = SafeShiftIteration<typename Container::iterator>
     >
   class MemoryManager
@@ -174,9 +176,15 @@ namespace Mix {
     using Iterating = IterationPolicy;
     template<class T>
     T* Get() {
+      Performance::Instance().Start(10);
       auto ins_key = OrderingPolicy(T());
+      Performance::Instance().Finish(10);
+      Performance::Instance().Start(20);
       auto ins_val = PoolPolicy(T());
+      Performance::Instance().Finish(20);
+      Performance::Instance().Start(30);
       auto it = Base::insert(std::make_pair(ins_key, ins_val));
+      Performance::Instance().Finish(30);
       return static_cast<T*>(it->second.Address());
     }
     void Release(void* p) {
