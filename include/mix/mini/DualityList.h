@@ -3,14 +3,11 @@
 //  Copyright © 2020年 狩野 亮. All rights reserved.
 //
 
-#ifndef __DUALITY_LIST_H__
-#define __DUALITY_LIST_H__
+#pragma once
 
 #include <cstddef>
 #include <iterator>
 #include <functional>
-
-#include <mix/mini/PerformanceTester.h>
 
 namespace Mix
 {
@@ -209,20 +206,12 @@ namespace Mix
     iterator insert(iterator position, const T& val) noexcept
     {
       if (full()) return iterator(nullptr);
-      Performance::Instance().Start(1000);
       iterator input = free_begin(); // 空列より未初期化対象を獲得
-      Performance::Instance().Finish(1000);
-      Performance::Instance().Start(2000);
       iterator result = LinkTo(position, input); // resultはinputを指す
-      Performance::Instance().Finish(2000);
-      Performance::Instance().Start(3000);
       if (!result) return iterator(nullptr);
-      Performance::Instance().Finish(3000);
       
-      Performance::Instance().Start(4000);
       // *result = val;
       new(&(*result)) value_type(val);
-      Performance::Instance().Finish(4000);
         
       num_++;
       return result;
@@ -342,4 +331,3 @@ namespace Mix
 
 } // namespace Mix
 
-#endif
