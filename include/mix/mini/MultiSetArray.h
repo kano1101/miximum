@@ -8,7 +8,6 @@
 #include <algorithm>
 
 #include <mix/mini/DualityList.h>
-#include <mix/mini/PerformanceTester.h>
 
 namespace Mix
 {
@@ -60,27 +59,17 @@ namespace Mix
       
   private:
     iterator lower_bound(const key_type& x) const noexcept {
-      Performance::Instance().Start(5000);
       auto b = c_.begin();
-      Performance::Instance().Finish(5000);
-      Performance::Instance().Start(6000);
       auto e = c_.end();
-      Performance::Instance().Finish(6000);
-      Performance::Instance().Start(7000);
-      auto r = std::lower_bound(b, e, x, key_compare());
-      Performance::Instance().Finish(7000);
-      return r;
+      auto result = std::lower_bound(b, e, x, key_compare());
+      return result;
     }
       
   public:
     iterator insert(const key_type& x) noexcept {
-      Performance::Instance().Start(10000);
       auto it = lower_bound(x);
-      Performance::Instance().Finish(10000);
-      Performance::Instance().Start(20000);
-      auto ret = c_.insert(it, x);
-      Performance::Instance().Finish(20000);
-      return ret;
+      auto result = c_.insert(it, x);
+      return result;
     }
     iterator erase(iterator target) noexcept { return c_.erase(target); }
 
