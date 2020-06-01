@@ -104,6 +104,13 @@ namespace Mix {
   template<class I>
   std::unordered_multiset<I*> SafeShiftIteration<I>::iterators_;
 
+  template<class Iterator>
+  class NoShift {
+  public:
+    static void ShiftIf(const Iterator& t) { (void)t; }
+    static void Add(Iterator& t) { (void)t; }
+    static void Remove(Iterator& t) { (void)t; }
+  };
   
   //////////////////////////////////////////////////////////////
   // コンテナ
@@ -165,7 +172,7 @@ namespace Mix {
     class OrderingPolicy = ListedOrder<TList>,
     class PoolPolicy = PoolMalloc<TList>,
     class Container = MultiMap<OrderingPolicy, PoolPolicy>,
-    class IterationPolicy = SafeShiftIteration<typename Container::iterator>
+    class IterationPolicy = NoShift<typename Container::iterator>
     >
   class MemoryManager
     : public Container {
