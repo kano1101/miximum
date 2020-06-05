@@ -4,6 +4,7 @@
 #include <unordered_set>
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <loki/Singleton.h>
+#include <loki/TypeManip.h>
 #include <mix/Creator.h>
 #include <mix/Utility.h>
 #include <mix/mini/MultiMapArray.h>
@@ -19,7 +20,7 @@ namespace Mix {
   public:
     using Priority = Less<unsigned int>;
     template<class T>
-    ListedOrder(T t)
+    ListedOrder(Loki::Type2Type<T> t)
       : priority_(Loki::TL::IndexOf<TList, T>::value) {
       (void) t;
     }
@@ -39,7 +40,7 @@ namespace Mix {
   class PoolMalloc {
   public:
     template<class T>
-    PoolMalloc(T t)
+    PoolMalloc(Loki::Type2Type<T> t)
       : size_(sizeof(T)), pool_(static_cast<void*>(std::malloc(size_))) {
       (void) t;
     }
@@ -66,7 +67,7 @@ namespace Mix {
   class PoolStatic {
   public:
     template<class T>
-    PoolStatic(T t) {
+    PoolStatic(Loki::Type2Type<T> t) {
       (void) t;
     }
     bool operator < (const PoolStatic& rhs) const {
@@ -166,6 +167,9 @@ namespace Mix {
   
   /////////////////////////////////////////////////////////////////////////////////////////////////////
   // MemoryManagerホストクラス
+
+  template<class TList, class O, class P, class C, class I>
+  class MemoryManager;
   
   template<
     class TList,
@@ -181,8 +185,8 @@ namespace Mix {
     using Iterating = IterationPolicy;
     template<class T>
     T* Get() {
-      auto ins_key = OrderingPolicy(T());
-      auto ins_val = PoolPolicy(T());
+      auto ins_key = OrderingPolicy(Loki::Type2Type<T>());
+      auto ins_val = PoolPolicy(Loki::Type2Type<T>());
       auto it = Base::insert(std::make_pair(ins_key, ins_val));
       return static_cast<T*>(it->second.Address());
     }
