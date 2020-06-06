@@ -4,14 +4,6 @@
 
 namespace Mix {
 
-  class GraphicsInterface
-  {
-  public:
-    virtual ~GraphicsInterface() {}
-    virtual void Begin() const = 0;
-    virtual void End() const = 0;
-  };
-  
   class Framework {
   public:
     class MainWindowInterface {
