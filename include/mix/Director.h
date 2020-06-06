@@ -173,20 +173,21 @@ namespace Mix {
   
   template<
     class TList,
-    class OrderingPolicy = ListedOrder<TList>,
-    class PoolPolicy = PoolMalloc<TList>,
-    class Container = MultiMap<OrderingPolicy, PoolPolicy>,
+    class OrderingPolicy  = ListedOrder<TList>,
+    class PoolPolicy      = PoolMalloc <TList>,
+    class Container       = MultiMap<OrderingPolicy, PoolPolicy>,
     class IterationPolicy = NoShift<typename Container::iterator>
     >
   class MemoryManager
     : public Container {
   public:
-    using Base = Container;
+    using Base      = Container;
     using Iterating = IterationPolicy;
+    
     template<class T>
     T* Get() {
       auto ins_key = OrderingPolicy(Loki::Type2Type<T>());
-      auto ins_val = PoolPolicy(Loki::Type2Type<T>());
+      auto ins_val = PoolPolicy    (Loki::Type2Type<T>());
       auto it = Base::insert(std::make_pair(ins_key, ins_val));
       return static_cast<T*>(it->second.Address());
     }
