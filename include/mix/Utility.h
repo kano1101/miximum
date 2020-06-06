@@ -5,6 +5,25 @@
 #include <loki/Typelist.h>
 #pragma GCC diagnostic ignored "-Wunused-function"
 
+#define MIX_LOKI_DEFINE_SINGLETON_CLASS(SingletonType, FriendType) \
+    private: \
+    SingletonType() {} \
+    SingletonType(const SingletonType&) {} \
+    SingletonType& operator=(const SingletonType&) { return *this; } \
+    SingletonType(SingletonType&&) {} \
+    SingletonType& operator=(SingletonType&&) { return *this; } \
+    friend class FriendType<SingletonType>;
+
+#define MIX_LOKI_DEFINE_SINGLETON_STRUCT(SingletonType, FriendType) \
+    private: \
+    SingletonType() {} \
+    SingletonType(const SingletonType&) {} \
+    SingletonType& operator=(const SingletonType&) { return *this; } \
+    SingletonType(SingletonType&&) {} \
+    SingletonType& operator=(SingletonType&&) { return *this; } \
+    friend struct FriendType<SingletonType>;
+
+
 namespace Mix {
 
   namespace {

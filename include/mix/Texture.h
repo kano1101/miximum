@@ -77,10 +77,8 @@ namespace Mix {
     Loader(const std::string& fpath,
            unsigned int cx,
            unsigned int cy)
-      : texture_(nullptr) {
-      // const char* fpath = "mariwo.png";
-      // const unsigned int cx = 1;
-      // const unsigned int cy = 1;
+      : texture_(nullptr)
+      , fpath_(fpath) {
       pngInfo pinf;
       GLuint handle = pngBind(
         fpath.c_str(),
@@ -102,6 +100,7 @@ namespace Mix {
     }
   private:
     std::shared_ptr<Texture> texture_;
+    std::string fpath_;
   };
   
 }

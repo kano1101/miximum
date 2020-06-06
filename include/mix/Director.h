@@ -203,14 +203,9 @@ namespace Mix {
         Base::erase(it);
       }
     }
+
+    MIX_LOKI_DEFINE_SINGLETON_STRUCT(MemoryManager, Loki::CreateUsingNew);
   
-  private:
-    MemoryManager() {}
-    MemoryManager(const MemoryManager&) {}
-    MemoryManager& operator=(const MemoryManager&) {}
-    MemoryManager(MemoryManager&&) {}
-    MemoryManager& operator=(MemoryManager&&) {}
-    friend struct Loki::CreateUsingNew<MemoryManager>;
   };
 
   template<class Manager>
