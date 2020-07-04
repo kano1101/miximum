@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <loki/Typelist.h>
+#include <loki/TypeTraits.h>
 #pragma GCC diagnostic ignored "-Wunused-function"
 
 #define MIX_LOKI_DEFINE_SINGLETON_CLASS(SingletonType, FriendType) \
@@ -71,7 +72,59 @@ namespace Mix {
     T min_;
     T max_;
   };
-  
+
+  namespace Private {
+    template<typename T>
+    class inner_less {
+    public:
+      bool operator()(const T& lhs, const T& rhs) {
+        return lhs < rhs;
+      }
+    };
+    template<typename T>
+    class inner_less<T*> {
+    public:
+      bool operator()(const T* const lhs, const T* const rhs) {
+        return (lhs != nullptr) && (rhs != nullptr) ? *lhs < *rhs : assert(!"inner_lessでのNullポインタ参照エラー");
+      }
+    };
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // 最良値を保持させるために使うクラス
+  template<typename T, class Predicate = Private::inner_less<T>>
+  class Best {
+  public:
+    Best() : most_({}) {
+    }
+    Best(const T& sample) : most_(sample) {
+    }
+    T RecordIfBetter(const T& sample, Predicate pred = Predicate()) {
+      return pred(most_, sample) ? most_ = sample : most_;
+    }
+  private:
+    T most_;
+  };
+  template<typename T>
+  class Best<T*, typename Best<T*>::Predicate> {
+  public:
+    Best(const T* const sample = nullptr) : most_(sample) {
+    }
+    template<class Predicate = typename Best<T>::Compare>
+    T* RecordIfBetter(const T* const sample, Predicate pred = Predicate()) {
+      if ( sample == nullptr ) return most_;
+      if ( !IsExists() || pred(most_, sample) ) return most_ = sample;
+      return most_;
+    }
+    bool IsExists() const {
+      return most_ != nullptr;
+    }
+  private:
+    const T* most_;
+  };
+
+  ///////////////////////////////////////////////////////////////////////
+  // 定期実行に使えるTimerクラス
   class Timer {
   public:
     Timer(float limitTime)
@@ -150,26 +203,7 @@ namespace Mix {
       return value_ < rhs.value_;
     }
   private:
-    T value_;
-  };
-
-  template<class TList>
-  struct LeafLength;
-
-  template<>
-  struct LeafLength<Loki::NullType>
-  {
-    enum { value = 0 };
-  };
-  template<class T, class U>
-  struct LeafLength<Loki::Typelist<T, U>>
-  {
-    enum { value = 1 + LeafLength<U>::value };
-  };
-  template<class T1, class T2, class U>
-  struct LeafLength<Loki::Typelist<Loki::Typelist<T1, T2>, U>>
-  {
-    enum { value = LeafLength<Loki::Typelist<T1, T2>>::value + LeafLength<U>::value };
+    const T& value_;
   };
 
   namespace TL {
@@ -208,6 +242,27 @@ namespace Mix {
     template<>
     struct Connect<> {
       typedef Loki::NullType Result;
+    };
+
+    ///////////////////////////////////////////////////////////////////////
+    // タイプリストのネストされたリスト版Length
+    template<class TList>
+    struct LeafLength;
+
+    template<>
+    struct LeafLength<Loki::NullType>
+    {
+      enum { value = 0 };
+    };
+    template<class T, class U>
+    struct LeafLength<Loki::Typelist<T, U>>
+    {
+      enum { value = 1 + LeafLength<U>::value };
+    };
+    template<class T1, class T2, class U>
+    struct LeafLength<Loki::Typelist<Loki::Typelist<T1, T2>, U>>
+    {
+      enum { value = LeafLength<Loki::Typelist<T1, T2>>::value + LeafLength<U>::value };
     };
 
     /////////////////////////////////////////////////////////////////////
@@ -270,6 +325,23 @@ namespace Mix {
       )
     };
   };
-      
-}
 
+  template<class T> struct Convert2Raw                      { using Result = T; };
+  template<class T> struct Convert2Raw<T*>                  { using Result = T; };
+  template<class T> struct Convert2Raw<const T*>            { using Result = T; };
+  template<class T> struct Convert2Raw<T* const>            { using Result = T; };
+  template<class T> struct Convert2Raw<const T* const>      { using Result = T; };
+  template<class T> struct Convert2Raw<T&>                  { using Result = T; };
+  template<class T> struct Convert2Raw<const T&>            { using Result = T; };
+
+  template<class T> struct Convert2ConstRef                 { using Result = const T&; };
+  template<class T> struct Convert2ConstRef<T*>             { using Result = const T&; };
+  template<class T> struct Convert2ConstRef<const T*>       { using Result = const T&; };
+  template<class T> struct Convert2ConstRef<T* const>       { using Result = const T&; };
+  template<class T> struct Convert2ConstRef<const T* const> { using Result = const T&; };
+  template<class T> struct Convert2ConstRef<T&>             { using Result = const T&; };
+  template<class T> struct Convert2ConstRef<const T&>       { using Result = const T&; };
+  
+  template<class T> struct Convert2Lightweight
+  { using Result = typename Loki::TypeTraits<T>::ParameterType; };
+}
