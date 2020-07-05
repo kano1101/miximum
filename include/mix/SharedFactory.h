@@ -29,9 +29,9 @@ namespace Mix {
 
     ReturnType GetSharedPointer(const IdentifierType& id) {
       typename IdToProductMap::iterator i = m_.find(id);
-      if (i != m_.end())
-        return (i->second)();
-      assert(!"SharedFactory取得エラー");
+      if (i == m_.end())
+        assert(!"SharedFactory取得エラー");
+      return (i->second)();
     }
 
     std::size_t Count(const IdentifierType& id) {

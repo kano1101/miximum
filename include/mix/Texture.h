@@ -85,7 +85,9 @@ namespace Mix {
         PNG_NOMIPMAP, PNG_ALPHA,
         &pinf,
         GL_CLAMP, GL_NEAREST, GL_NEAREST);
+#ifndef NDEBUG
       std::cout << fpath << ", " << handle << std::endl;
+#endif
       assert(handle && "PNGの読み込みに失敗しました。");
       texture_.reset(new Texture(
         handle, cx, cy,

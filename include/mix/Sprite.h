@@ -7,6 +7,10 @@
 #include <mix/Texture.h>
 #include <mix/Vector.h>
 
+#ifndef UNUSED
+#define UNUSED(x) (void)x
+#endif
+
 namespace Mix {
 
   namespace Private {
@@ -24,6 +28,7 @@ namespace Mix {
       Loader loader = Loader(fpath, cx, cy); // TODO:LoaderはSingletonにしなければならないかも
       // 関数オブジェクトLoader登録：解放すべきインスタンス保持される
       bool result = factory.Register(fpath_, loader);
+      UNUSED(result);
       assert(result && "画像データオブジェクトの登録システムエラー");
     }
     virtual void Draw() const {
